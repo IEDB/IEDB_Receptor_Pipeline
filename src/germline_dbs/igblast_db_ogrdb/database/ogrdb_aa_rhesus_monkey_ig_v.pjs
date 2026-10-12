@@ -1,0 +1,24 @@
+{
+  "version": "1.2",
+  "dbname": "ogrdb_aa_rhesus_monkey_ig_v",
+  "dbtype": "Protein",
+  "db-version": 5,
+  "description": "/Users/lscheffer/PycharmProjects/IEDB_receptor_annotation/igblast_db_ogrdb/combined_aa_Macaca_mulatta_IG_V.fasta",
+  "number-of-letters": 224981,
+  "number-of-sequences": 2294,
+  "last-updated": "2026-05-13T12:30:00",
+  "number-of-volumes": 1,
+  "bytes-total": 576690,
+  "bytes-to-cache": 245844,
+  "files": [
+    "ogrdb_aa_rhesus_monkey_ig_v.pdb",
+    "ogrdb_aa_rhesus_monkey_ig_v.phr",
+    "ogrdb_aa_rhesus_monkey_ig_v.pin",
+    "ogrdb_aa_rhesus_monkey_ig_v.pog",
+    "ogrdb_aa_rhesus_monkey_ig_v.pos",
+    "ogrdb_aa_rhesus_monkey_ig_v.pot",
+    "ogrdb_aa_rhesus_monkey_ig_v.psq",
+    "ogrdb_aa_rhesus_monkey_ig_v.ptf",
+    "ogrdb_aa_rhesus_monkey_ig_v.pto"
+  ]
+}
