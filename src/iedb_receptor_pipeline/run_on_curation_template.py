@@ -184,7 +184,13 @@ def add_mandatory_fields_to_curation_template(curation_template):
     for col in util.CURATION_TEMPLATE_CURATED_COLUMNS:
         if col not in curation_template.columns:
             print(f"Adding missing column {col}")
+            logging.info(f" Adding missing column {col}")
             curation_template[col] = np.nan
+
+    for col in curation_template.columns:
+        if col not in util.CURATION_TEMPLATE_COLUMNS:
+            print(f"Found unknown column: {col}")
+            logging.warning(f" Found unknown column: {col}")
 
 def add_calculated_data_to_curation_template(curation_template, calculated_receptors):
     for chain in ("1", "2"):
