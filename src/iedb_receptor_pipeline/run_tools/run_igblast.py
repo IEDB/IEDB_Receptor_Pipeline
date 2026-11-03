@@ -67,8 +67,8 @@ def get_igblast_input(full_input, seq_col):
     return igblast_input[run_igblast].copy()
 
 def run_query(query):
-    logging.error("No query provided")
     if query is None:
+        logging.error("No query provided")
         return False
 
     logging.debug("Running query:\n" + query)
