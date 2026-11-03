@@ -29,7 +29,7 @@ def standardize_gene_single(module, gene, species):
         logging.error(f"Failed to standardize {species} gene {gene}: {result.error}")
 
     else:
-        logging.warning(f"Species '{species}' does not have an available gene set for gene '{gene}', testing in the absence of species..")
+        logging.info(f"Species '{species}' does not have an available gene set for gene '{gene}', testing in the absence of species..")
         if test_without_species(gene):
             return gene
 
@@ -81,7 +81,7 @@ def safe_return_junction_with_jgenes(junctions_with_jgenes, input_cdr3):
         jgene_set_no_alleles = sorted(set({gene.rsplit("*")[0] for gene in junction_jgenes.split(", ")}))
 
         if len(jgene_set_no_alleles) > 1:
-            logging.warning(
+            logging.info(
                 f"J gene standardization of '{input_cdr3}' to '{junction_calc}' was based on multiple J gene matches ({junction_jgenes}), "
                 f"The J annotations will be omitted.")
             junction_jgenes = None
@@ -182,7 +182,16 @@ def tt_standardize_junction_single_vj(row, v_symbol, j_symbol, species, input_cd
         if util.matches_basic_junction_pattern(std_junction.attempted_fix) and is_curated_cdr3:
             return util.safe_return_junction(std_junction.attempted_fix, row["aa"]), std_junction.j_gene_match
 
-    logging.warning(f"Failed calculating {row['species_latin']} {row['chain_type']} CDR3/Junction based on Curated CDR3 \"{row["cdr3_seq_curated"]}\", V \"{row["vgene_curated"]}\", J \"{row["jgene_curated"]}\": {std_junction.error}")
+
+    warning_formatted = f"Failed calculating {row['species_latin']} {row['chain_type']} CDR3/Junction based on Curated CDR3 \"{row["cdr3_seq_curated"]}\", V \"{row["vgene_curated"]}\", J \"{row["jgene_curated"]}\": {std_junction.error}"
+
+    if std_junction.error == f"Unsupported species: {species.replace(" ", "").lower()}":
+        # Unsupported species is very common but cannot be fixed in curation.
+        # If this is the only error, report as info only to avoid clutter.
+        logging.info(warning_formatted)
+    else:
+        logging.warning(warning_formatted)
+
     return None, None
 
 def safe_standardize_junction(row, vgene_calc, jgene_calc, species):
