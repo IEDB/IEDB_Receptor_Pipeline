@@ -60,9 +60,11 @@ def validate_row_chain(row, receptor_type_col, aa_col, v_dom_col, cdr1_col, cdr2
 
     for aa_seq_expected_column in [cdr1_col, cdr2_col, cdr3_col]:
         if aa_seq_expected_column is not None:
-            if pd.notna(row[aa_seq_expected_column]) and not util.is_valid_alphabet(row[aa_seq_expected_column].strip(), util.AA_ALPHABET_STRICT):
-                logging.error(f"Illegal characters in {aa_seq_expected_column}: {get_illegal_chars(row[aa_seq_expected_column], util.AA_ALPHABET_STRICT)}{LOG_FILE_SEPARATOR}full_sequence: {row[aa_seq_expected_column]}")
-                valid = False
+            if pd.notna(row[aa_seq_expected_column]) and not util.is_valid_alphabet(row[aa_seq_expected_column].strip(), util.AA_ALPHABET_AMBIGUOUS):
+                if pd.notna(row[aa_seq_expected_column]) and not util.is_valid_alphabet(row[aa_seq_expected_column].strip(), util.AA_ALPHABET_STRICT):
+                    logging.error(f"Illegal characters in {aa_seq_expected_column}: {get_illegal_chars(row[aa_seq_expected_column], util.AA_ALPHABET_STRICT)}{LOG_FILE_SEPARATOR}full_sequence: {row[aa_seq_expected_column]}")
+                else:
+                    logging.warning(f"Illegal characters in {aa_seq_expected_column}: {get_illegal_chars(row[aa_seq_expected_column], util.AA_ALPHABET_STRICT)}{LOG_FILE_SEPARATOR}full_sequence: {row[aa_seq_expected_column]}")
 
     for aa_seq_expected_column in [aa_col, v_dom_col]:
         if aa_seq_expected_column is not None:
