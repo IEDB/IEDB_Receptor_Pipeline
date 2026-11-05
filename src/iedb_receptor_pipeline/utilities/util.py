@@ -348,5 +348,6 @@ def safe_return_junction(junction_seq, aa_seq):
 
 def matches_basic_junction_pattern(junction):
     if re.match(r"^C.{4,40}[WF]$", junction):
-        return True
+        if is_valid_alphabet(junction, AA_ALPHABET_STRICT):
+            return True
     return False
