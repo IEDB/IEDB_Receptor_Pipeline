@@ -205,6 +205,22 @@ def add_calculated_data_to_curation_template(curation_template, calculated_recep
         curation_template[f"chain{chain}_vdomain_calculated"] = calculated_receptors[f"v_dom_seq_chain{chain}"]
         curation_template[f"chain{chain}_chain_type_calculated"] = calculated_receptors[f"chain_type_chain{chain}"]
 
+def flag_multiple_row_assays(curation_template):
+    compare_cols = [col for col in util.CURATION_TEMPLATE_CURATED_COLUMNS if
+                    col not in ("ASSAY_ID", "curated_receptor_id")]
+
+    for _, group in curation_template.groupby(compare_cols, dropna=False, sort=False):
+        if len(group) > 1:
+            assay_ids = group["ASSAY_ID"].dropna().unique().tolist()
+            if len(assay_ids) > 1:
+                for template_row in group.index:
+                    with set_logging_context(template_row=template_row, chain=1):
+                        logging.error(f"Found identical curated receptor with multiple ASSAY_IDs: {assay_ids}. ")
+            else:
+                for template_row in group.index:
+                    with set_logging_context(template_row=template_row, chain=1):
+                        logging.error(f"These curated receptor rows are identical: {', '.join([str(row_number + 2) for row_number in group.index.tolist()])}. ")
+
 def add_errors_to_curation_template(curation_template, error_collector):
     curation_template["CHAIN1_ERRORS"] = curation_template.index.map(error_collector.errors_per_row["CHAIN1"])
     curation_template["CHAIN2_ERRORS"] = curation_template.index.map(error_collector.errors_per_row["CHAIN2"])
@@ -239,6 +255,7 @@ def main(args):
     add_mandatory_fields_to_curation_template(curation_template)
 
     with log_with_error_collector() as error_collector:
+        flag_multiple_row_assays(curation_template)
         resolve_accession_sequences(curation_template, retrieve_accessions=True)
 
         tool_input = get_tool_input(curation_template, translate_short_nt_to_cdr3_aa=True, v_dom_to_aa=True, scfv_dom_to_aa=True)
